@@ -1,0 +1,137 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Product {
+  name: String!
+}
+
+type Approval {
+  id: String!
+  approved: Boolean!
+  approverComments: String!
+  approver: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Request {
+  id: ID!
+  user: User!
+  package: Package!
+  approvals: [Approval!]
+  status: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Package {
+  id: String!
+  name: String!
+  products: [Product!]
+}
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  firstName: String!
+  lastName: String!
+  roles: [String!]!
+}
+
+type StatusResult {
+  message: String!
+  success: Boolean!
+  id: ID!
+}
+
+type AuthenticatedPayload {
+  access_token: String!
+}
+
+type Query {
+  findAllUser: [User!]!
+  findUserById(id: String!): User!
+  findAllPackages: [Package!]!
+  findPackageById(id: String!): Package!
+  findAllProducts: [Product!]!
+  findProductById(id: String!): Product!
+  getAllRequests: [Request!]!
+  getRequestById(requestId: ID!): Request!
+  approvals: [Approval!]!
+  approval(id: String!): Approval!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): StatusResult!
+  removeUser(id: String!): StatusResult!
+  register(registerInput: RegisterInput!): AuthenticatedPayload!
+  login(loginInput: LoginInput!): AuthenticatedPayload!
+  createPackage(packageData: CreatePackageDTO!): Package!
+  updatePackage(id: String!, packageData: UpdatePackageDTO!): Package!
+  removePackage(id: String!): Package!
+  createProduct(productData: CreateProductDTO!): Product!
+  updateProduct(id: String!, productData: UpdateProductDTO!): Product!
+  removeProduct(id: String!): Product!
+  createRequest(createRequestInput: CreateRequestDto!): Request!
+  approveRequest(approvalId: String!, approverId: String!, comments: String!): Approval!
+}
+
+input CreateUserInput {
+  username: String!
+  password: String!
+  email: String!
+  firstName: String!
+  lastName: String!
+  selectedRoles: [String!]!
+}
+
+input UpdateUserInput {
+  password: String!
+  firstName: String!
+  lastName: String!
+}
+
+input RegisterInput {
+  username: String!
+  password: String!
+  email: String!
+  firstName: String!
+  lastName: String!
+  selectedRoles: [String!]!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+input CreatePackageDTO {
+  name: String!
+  products: [CreateProductDTO!]
+}
+
+input CreateProductDTO {
+  name: String!
+}
+
+input UpdatePackageDTO {
+  name: String
+  products: [UpdateProductDTO!]
+}
+
+input UpdateProductDTO {
+  name: String!
+}
+
+input CreateRequestDto {
+  userId: String!
+  packageId: String!
+}
