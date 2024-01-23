@@ -52,7 +52,7 @@ export class UserService {
       createUserInput;
 
     await this.checkIfExists("email", email, "Email already exists");
-    // await this.checkIfExists("username", username, "Username already exists");
+    await this.checkIfExists("username", username, "Username already exists");
 
     // Determine user roles
     const roles: Role[] = await this.determineRoles(selectedRoles, email);
@@ -121,6 +121,10 @@ export class UserService {
     await this.userRepo.delete({ id });
 
     return statusResult;
+  }
+
+  async count(): Promise<number> {
+    return this.userRepo.count();
   }
 
   

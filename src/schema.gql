@@ -22,6 +22,7 @@ scalar DateTime
 
 type Request {
   id: ID!
+  type: String
   user: User!
   package: Package!
   approvals: [Approval!]
@@ -42,6 +43,7 @@ type User {
   email: String!
   firstName: String!
   lastName: String!
+  department: String
   roles: [String!]!
 }
 
@@ -58,12 +60,14 @@ type AuthenticatedPayload {
 type Query {
   findAllUser: [User!]!
   findUserById(id: String!): User!
+  usersCount: Int!
   findAllPackages: [Package!]!
   findPackageById(id: String!): Package!
   findAllProducts: [Product!]!
   findProductById(id: String!): Product!
   getAllRequests: [Request!]!
   getRequestById(requestId: ID!): Request!
+  requestsCount: Int!
   approvals: [Approval!]!
   approval(id: String!): Approval!
 }
@@ -132,6 +136,7 @@ input UpdateProductDTO {
 }
 
 input CreateRequestDto {
+  type: String!
   userId: String!
   packageId: String!
 }
