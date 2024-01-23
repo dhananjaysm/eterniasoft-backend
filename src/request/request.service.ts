@@ -86,4 +86,8 @@ async handleRequestApproval(data: any) {
   async getRequestById(requestId: string): Promise<Request | undefined> {
     return this.requestRepository.findOne({where:{id:requestId}});
   }
+
+  async count(): Promise<number> {
+    return this.requestRepository.count();
+  }
 }

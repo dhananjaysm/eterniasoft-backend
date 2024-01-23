@@ -26,8 +26,10 @@ export class Request {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
+  //GOLD PACKAGE => Products + Additional Products ($$$) + Additional Features ($$$)
+  //Zoho -> Zoho CRM, Zoho Desk -> Meeting Management Feature (Zoho CRM) {Beatlet}
   @Field(()=>String,{nullable:true})
-  @Column()
+  @Column({nullable:true})
   type: string;
 
   @Field(() => User)
@@ -39,8 +41,9 @@ export class Request {
   package: Package;
 
 
+  //TODO: PRODUCT AND FEATURES
   @Field(() => [Approval], { nullable: true })
-  @OneToMany(() => Approval, (approval) => approval.request)
+  @OneToMany(() => Approval, (approval) => approval.request,{eager:true})
   approvals: Approval[];
 
   @Field()

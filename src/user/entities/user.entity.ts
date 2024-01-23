@@ -20,7 +20,7 @@ export class User {
     @Column({ type : 'varchar', unique : true })
     username : string ;
 
-    @Column({ type : 'varchar' , nullable : false, select:false})
+    @Column({ type : 'varchar' , nullable : false})
     password : string ;
 
     // hash password before insert
@@ -46,6 +46,10 @@ export class User {
     @Field()
     @Column({ type : 'varchar'})
     lastName : string ;
+
+    @Field({nullable:true})
+    @Column({nullable:true})
+    department: string;
 
     @Field((type)=>[String])
     @Column({ type : 'enum', array : true , enum : Role , nullable : false ,default : []})

@@ -4,26 +4,26 @@ import { GqlExecutionContext } from "@nestjs/graphql";
 import { Observable } from "rxjs";
 import { Role } from "src/user/enums/role.enum";
 
-
 @Injectable()
-export class RoleGuard implements CanActivate{
-    constructor(
-        private reflector : Reflector ,
-    ){}
+export class RoleGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
 
-    canActivate(context: GqlExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-        const ctx = GqlExecutionContext.create(context);
-        const requiredRoles = this.reflector.getAllAndOverride<Role[]>('roles',[
-            ctx.getHandler() , 
-            ctx.getClass()
-        ])
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    // Convert the execution context to a GraphQL execution context
+    const ctx = GqlExecutionContext.create(context);
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>('roles', [
+      ctx.getHandler(),
+      ctx.getClass(),
+    ]);
 
-        if(!requiredRoles){
-            return true ;
-        }
-
-        const { user } = ctx.getContext().req;
-
-        return requiredRoles.some((role)=>user?.roles?.includes(role));
+    if (!requiredRoles) {
+      return true;
     }
-}
+
+    // Access the user object from the GraphQL context
+    const { user } = ctx.getContext().req;
+
+    // Check if the user's roles include any of the required roles
+    return requiredRoles.some((role) => user?.roles?.includes(role));
+  }
+}   
