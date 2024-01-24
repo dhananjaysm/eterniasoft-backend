@@ -14,19 +14,19 @@ import * as bcrypt from "bcrypt";
 import { IsEmail, IsNotEmpty } from "class-validator";
 import { Request } from "src/request/entities/request.entity";
 import { Approval } from "src/approval/entities/approval.entity";
+import { Package } from "src/package/entities/package.entity";
 
 
 @ObjectType()
-@Entity({name : 'User'})
+@Entity({ name: "User" })
 export class User {
-    
-    @Field((type)=>ID)
-    @PrimaryGeneratedColumn('uuid')
-    id : string ; 
-    
-    @Field()
-    @Column({ type : 'varchar', unique : true })
-    username : string ;
+  @Field((type) => ID)
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
+
+  @Field()
+  @Column({ type: "varchar", unique: true })
+  username: string;
 
     @Column({ type : 'varchar' , nullable : false})
     password : string ;
@@ -40,16 +40,16 @@ export class User {
         }
     }
 
-    @Field()
-    @IsEmail()
-    @IsNotEmpty()
-    @Column({ type : 'varchar' , unique : true ,nullable : false })
-    email : string ;
+  @Field()
+  @IsEmail()
+  @IsNotEmpty()
+  @Column({ type: "varchar", unique: true, nullable: false })
+  email: string;
 
-    @Field()
-    @IsNotEmpty()
-    @Column({ type : 'varchar'})
-    firstName : string ;
+  @Field()
+  @IsNotEmpty()
+  @Column({ type: "varchar" })
+  firstName: string;
 
     @Field()
     @Column({ type : 'varchar'})
