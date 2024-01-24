@@ -14,6 +14,18 @@ export class Package {
     @Column({ type: 'varchar', unique: true })
     name: string;
 
+    @Field({nullable:true})
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+    price: number;
+
+    @Field({ nullable: true })
+    @Column({ type: 'text', nullable: true })
+    description: string;
+
+    @Field({ nullable: true })
+    @Column({ type: 'integer', nullable: true })
+    maxUsers: number;
+
     @Field(()=>[Product],{nullable:true})
     @OneToMany(() => Product, product => product.package, { cascade: true })
     products: Product[];

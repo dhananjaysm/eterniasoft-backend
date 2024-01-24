@@ -1,5 +1,5 @@
 // approval.service.ts
-import { Injectable, OnModuleInit } from "@nestjs/common";
+import { Injectable, NotFoundException, OnModuleInit, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Approval } from "./entities/approval.entity";
@@ -21,12 +21,13 @@ export class ApprovalService implements OnModuleInit {
     );
   }
 
-  @OnEvent("request.created",{ async: true })
+  // @OnEvent("request.created",{ async: true })
   async handleNewRequest(data: any) {
     // Extract necessary data from the event
-    const { requestId, userId } = data;
+    const { requestId, userId ,approvers} = data;
     console.log(`Event received for request creation: ${requestId}`);
 
+    //FIXME: Same user . Need to take approver id
     // Fetch the approver based on the event data
     const approver = await this.userService.findOne({ id: userId });
     if (!approver) {
@@ -43,8 +44,9 @@ export class ApprovalService implements OnModuleInit {
     await this.approvalRepository.save(approval);
 
     // notifying other users
-  }
 
+    ///
+  }
   async approveRequest(
     approvalId: string,
     approverId: string,
@@ -52,30 +54,36 @@ export class ApprovalService implements OnModuleInit {
   ): Promise<Approval> {
     const approval = await this.approvalRepository.findOne({
       where: { id: approvalId },
-      relations: ["request"],
+      relations: ['request'],
     });
     const approver = await this.userService.findOne({ id: approverId });
-
+  
     if (!approval) {
-      throw new Error("Approval record not found");
+      throw new NotFoundException('Approval record not found');
     }
-
+  
     if (!approver) {
-      throw new Error("Approver not found");
+      throw new NotFoundException('Approver not found');
     }
-
+  
+    if (approval.approved) {
+      throw new UnauthorizedException('Approval has already been approved');
+    }
+  
     approval.approved = true;
     approval.approverComments = comments;
     approval.approver = approver;
-
+  
     await this.approvalRepository.save(approval);
-
-    this.eventEmitter.emit("request.approved", {
+  
+    this.eventEmitter.emit('request.approved', {
       requestId: approval.request.id,
       approverId,
       comments,
     });
-
+  
+    console.log(`Event emitted for approval done: ${approval.id}`);
+  
     return approval;
   }
 

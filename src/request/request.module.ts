@@ -7,10 +7,17 @@ import { RequestResolver } from "./request.resolver";
 import { UserModule } from "src/user/user.module";
 import { PackageModule } from "src/package/package.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
+import { SubscriptionModule } from "src/subscription/subscription.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Request]),UserModule,PackageModule,EventEmitterModule],
-  providers: [RequestService,RequestResolver],
+  imports: [
+    TypeOrmModule.forFeature([Request]),
+    UserModule,
+    PackageModule,
+    SubscriptionModule,
+    EventEmitterModule,
+  ],
+  providers: [RequestService, RequestResolver],
   exports: [RequestService],
 })
 export class RequestModule {}

@@ -44,7 +44,7 @@ export class AuthService {
 
     const payload: JwtPayload = {
       roles: newUser.roles,
-      sub: newUser.id,
+      userId: newUser.id,
       username: newUser.username,
     };
 
@@ -59,15 +59,15 @@ export class AuthService {
 
     const payload: JwtPayload = {
       roles: user.roles,
-      sub: user.id,
+      userId: user.id,
       username: user.username,
     };
 
     return { access_token: await this._signToken(payload), role: user.roles };
   }
 
-  async validateUser({ sub }: JwtPayload) {
-    const user = await this.userService.findOne({ id: sub });
+  async validateUser({ userId }: JwtPayload) {
+    const user = await this.userService.findOne({ id: userId });
 
     if (!user) {
       throw new UnauthorizedException("Invalid token");

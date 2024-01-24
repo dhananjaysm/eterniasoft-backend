@@ -2,10 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Product {
-  name: String!
-}
-
 type Approval {
   id: String!
   approved: Boolean!
@@ -20,21 +16,51 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Request {
-  id: ID!
-  type: String
-  user: User!
-  package: Package!
-  approvals: [Approval!]
-  status: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+type Product {
+  name: String!
 }
 
 type Package {
   id: String!
   name: String!
+  price: Float
+  description: String
+  maxUsers: Float
   products: [Product!]
+}
+
+type SubscriptionEntity {
+  id: String!
+  subscriptionType: SubscriptionType!
+  status: SubscriptionStatus!
+  user: User!
+  package: Package!
+  startDate: DateTime!
+  endDate: DateTime!
+  renewalPeriod: Int
+}
+
+enum SubscriptionType {
+  Monthly
+  Annual
+}
+
+enum SubscriptionStatus {
+  Active
+  Expired
+  Cancelled
+}
+
+type Request {
+  id: ID!
+  requestType: String!
+  user: User!
+  package: Package!
+  subscription: SubscriptionEntity!
+  approvals: [Approval!]
+  status: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type User {
@@ -45,6 +71,7 @@ type User {
   lastName: String!
   department: String
   roles: [String!]!
+  subscriptions: [SubscriptionEntity!]!
 }
 
 type StatusResult {
@@ -68,6 +95,9 @@ type Query {
   getAllRequests: [Request!]!
   getRequestById(requestId: ID!): Request!
   requestsCount: Int!
+  findAllSubscriptions: [SubscriptionEntity!]!
+  findSubscriptionById(id: String!): SubscriptionEntity!
+  userSubscriptions(userId: String!): [SubscriptionEntity!]!
   approvals: [Approval!]!
   approval(id: String!): Approval!
 }
@@ -136,7 +166,15 @@ input UpdateProductDTO {
 }
 
 input CreateRequestDto {
-  type: String!
+  requestType: RequestType! = NewSubscription
+  subscriptionId: String
+  renewalType: SubscriptionType
   userId: String!
   packageId: String!
+}
+
+enum RequestType {
+  SubscriptionRenewal
+  SubscriptionUpgrade
+  NewSubscription
 }

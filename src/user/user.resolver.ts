@@ -10,6 +10,8 @@ import { UpdateUserInput } from "./dto/update-user.input";
 import { User } from "./entities/user.entity";
 import { Role } from "./enums/role.enum";
 import { UserService } from "./user.service";
+import { PermissionsGuard } from "src/auth/guards/permission.guard";
+import { HasPermissions } from "src/auth/decorator/permission.decorator";
 
 @Resolver(() => User)
 export class UserReslover {
@@ -54,6 +56,8 @@ export class UserReslover {
     return this.userService.remove(id);
   }
 
+  // @HasPermissions("view_all_users")
+  // @UseGuards(JwtAuthGuard, PermissionsGuard)
   @HasRoles(Role.Admin,Role.Super)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Query(() => Int)
