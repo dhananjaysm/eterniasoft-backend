@@ -12,6 +12,7 @@ import { Role } from "./enums/role.enum";
 import { UserService } from "./user.service";
 import { PermissionsGuard } from "src/auth/guards/permission.guard";
 import { HasPermissions } from "src/auth/decorator/permission.decorator";
+import { LoginInput } from "./dto/login.input";
 
 @Resolver(() => User)
 export class UserReslover {
@@ -27,10 +28,11 @@ export class UserReslover {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => User, { name: "findUserById" })
-  async findUserById(@Args("id", { type: () => String }) id: string) {
-    return await this.userService.findOne({ id });
+  @Query(() => User)
+  async findUserById(@Args("userId", { type: () => String }) userId: string) {
+    return await this.userService.findOne({ id:userId });
   }
+
 
   @HasRoles(Role.Admin)
   @UseGuards(JwtAuthGuard, RoleGuard)

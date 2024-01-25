@@ -1,32 +1,32 @@
-// product.resolver.ts
+// package.resolver.ts
 import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
-import { ProductService } from "./product.service";
 import { Product } from "./entities/product.entity";
-import { CreateProductDTO } from "./dto/create-product.dto";
+import { ProductService } from "./product.service";
+import { CreateProductInput } from "./dto/create-product.dto";
 import { UpdateProductDTO } from "./dto/update-product.dto";
 
 @Resolver(() => Product)
 export class ProductResolver {
   constructor(private readonly productService: ProductService) {}
 
-  @Query(() => [Product],{name : 'findAllProducts'})
+  @Query(() => [Product])
   async findProducts(): Promise<Product[]> {
     return this.productService.findAll();
   }
 
-  @Query(() => Product,{name : 'findProductById'})
-  async findProduct(@Args("id") id: string): Promise<Product> {
-    return this.productService.findOne(id);
+  @Query(() => Product)
+  async findProduct(@Args("productId") productId: string): Promise<Product> {
+    return this.productService.findOne({ id: productId });
   }
 
-  @Mutation(() => Product,{name : 'createProduct'})
+  @Mutation(() => Product)
   async createProduct(
-    @Args("productData") productData: CreateProductDTO
+    @Args("productData") productData: CreateProductInput
   ): Promise<Product> {
-    return this.productService.create(productData);
+    return this.productService.createProduct(productData);
   }
 
-  @Mutation(() => Product,{name:"updateProduct"})
+  @Mutation(() => Product)
   async updateProduct(
     @Args("id") id: string,
     @Args("productData") productData: UpdateProductDTO
@@ -34,7 +34,7 @@ export class ProductResolver {
     return this.productService.update(id, productData);
   }
 
-  @Mutation(() => Product,{name:"removeProduct"})
+  @Mutation(() => Product)
   async removeProduct(@Args("id") id: string): Promise<void> {
     return this.productService.remove(id);
   }

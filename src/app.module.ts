@@ -6,13 +6,12 @@ import { join } from "path";
 import { AuthModule } from "./auth/auth.module";
 import { DatabaseModule } from "./config/database.module";
 import { UserModule } from "./user/user.module";
-import { PackageModule } from "./package/package.module";
-import { ProductModule } from "./product/product.module";
 import { FeatureModule } from "./feature/feature.module";
 import { RequestModule } from "./request/request.module";
 import { ApprovalModule } from "./approval/approval.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { SubscriptionModule } from "./subscription/subscription.module";
+import { ProductModule } from "./product/product.module";
 
 @Module({
   imports: [
@@ -26,7 +25,6 @@ import { SubscriptionModule } from "./subscription/subscription.module";
     }),
     UserModule,
     AuthModule,
-    PackageModule,
     ProductModule,
     FeatureModule,
     RequestModule,

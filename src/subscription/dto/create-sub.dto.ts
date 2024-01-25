@@ -8,7 +8,7 @@ export class CreateSubscriptionDto {
 
   @IsNotEmpty()
   @IsUUID() // You can use other validation decorators based on your needs
-  packageId: string; // Package's UUID
+  planId: string; // Package's UUID
 
   @IsNotEmpty()
   @IsEnum(SubscriptionType, {

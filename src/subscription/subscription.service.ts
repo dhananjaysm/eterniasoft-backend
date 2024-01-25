@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsWhere, Repository } from "typeorm";
-import { PackageService } from "src/package/package.service";
 import {
   SubscriptionEntity,
   SubscriptionStatus,
@@ -10,6 +9,8 @@ import {
 import { CreateSubscriptionDto } from "./dto/create-sub.dto";
 import { UserService } from "src/user/user.service";
 import { RenewSubscriptionDto } from "./dto/renew-sub.dto";
+import { ProductService } from "src/product/product.service";
+import { PlanService } from "src/plan/plan.service";
 type Where = FindOptionsWhere<SubscriptionEntity>;
 
 @Injectable()
@@ -17,20 +18,20 @@ export class SubscriptionService {
   constructor(
     @InjectRepository(SubscriptionEntity)
     private readonly subscriptionRepository: Repository<SubscriptionEntity>,
-    private readonly packageService: PackageService, // Import your package service
+    private readonly planService: PlanService, // Import your package service
     private readonly userService: UserService // Import your user service
   ) {}
 
-  async createSubscription(
+  async createPlanSubscription(
     createSubscriptionDto: CreateSubscriptionDto
   ): Promise<SubscriptionEntity> {
-    const { userId, packageId, subscriptionType } = createSubscriptionDto;
+    const { userId, planId, subscriptionType } = createSubscriptionDto;
 
     // Fetch the user and package entities
     const user = await this.userService.findOne({ id: userId }); // Implement this method in your user service
-    const pkg = await this.packageService.findOne({ id: packageId }); // Fetch the selected package
+    const plan = await this.planService.findOne(planId); // Fetch the selected package
 
-    if (!user || !pkg) {
+    if (!user || !plan) {
       // Handle cases where user or package is not found
       // You can throw an exception or handle this case as needed
       throw new Error("User or Package not found");
@@ -40,7 +41,7 @@ export class SubscriptionService {
     const existingSubscription = await this.subscriptionRepository.findOne({
       where: {
         user: { id: user.id },
-        package: { id: packageId },
+        plan: { id: planId },
       },
     });
 
@@ -51,7 +52,7 @@ export class SubscriptionService {
 
     const subscription = new SubscriptionEntity();
     subscription.user = user;
-    subscription.package = pkg;
+    subscription.plan = plan;
     subscription.subscriptionType = subscriptionType;
     subscription.status = SubscriptionStatus.Active;
 
@@ -80,7 +81,7 @@ export class SubscriptionService {
     return this.subscriptionRepository.findOne({ where });
   }
 
-  async renewSubscription(
+  async renewPlanSubscription(
     renewSubscriptionDto: RenewSubscriptionDto // Specify the desired renewal type (Monthly or Annual)
   ): Promise<SubscriptionEntity> {
     const { subscriptionId, userId, renewalType } = renewSubscriptionDto;
@@ -117,7 +118,7 @@ export class SubscriptionService {
     const renewedSubscription = new SubscriptionEntity();
     renewedSubscription.subscriptionType = renewalType;
     renewedSubscription.user = subscription.user;
-    renewedSubscription.package = subscription.package;
+    renewedSubscription.plan = subscription.plan;
     renewedSubscription.startDate = currentDate;
     renewedSubscription.endDate = newEndDate;
     renewedSubscription.status = SubscriptionStatus.Active;
@@ -127,30 +128,30 @@ export class SubscriptionService {
     return renewedSubscription;
   }
 
-  async upgradeSubscription(
+  async upgradePlanSubscription(
     userId: string,
-    packageId: string
+    planId: string
   ): Promise<SubscriptionEntity> {
     // Fetch the user and package entities
     const user = await this.userService.findOne({ id: userId });
-    const pkg = await this.packageService.findOne({ id: packageId });
+    const plan = await this.planService.findOne(planId);
 
-    if (!user || !pkg) {
+    if (!user || !plan) {
       // Handle cases where user or package is not found
-      throw new Error("User or Package not found");
+      throw new Error("User or Product not found");
     }
 
     // Check if a subscription with the same user and package already exists
     const existingSubscription = await this.subscriptionRepository.findOne({
       where: {
         user: { id: user.id },
-        package: { id: packageId },
+        plan: { id: plan.id },
       },
     });
 
     if (!existingSubscription) {
       // Handle the case where the existing subscription is not found
-      throw new Error("Subscription not found for this user and package");
+      throw new Error("Subscription not found for this user and product");
     }
 
     if (existingSubscription.subscriptionType === SubscriptionType.Annual) {
@@ -176,8 +177,12 @@ export class SubscriptionService {
       where: { user: { id: userId } },
     });
     if (!userSubscriptions) {
-      throw new NotFoundException('User subscriptions not found');
+      throw new NotFoundException("User subscriptions not found");
     }
     return userSubscriptions;
+  }
+
+  async count(): Promise<number> {
+    return this.subscriptionRepository.count();
   }
 }

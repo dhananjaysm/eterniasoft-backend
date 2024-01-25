@@ -1,7 +1,12 @@
 // Subscription.resolver.ts
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { SubscriptionEntity } from './entities/subscription.entity';
 import { SubscriptionService } from './subscription.service';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RoleGuard } from 'src/auth/guards/role.guard';
+import { HasRoles } from 'src/user/decorator/role.decorator';
+import { Role } from 'src/user/enums/role.enum';
 
 @Resolver("Subscription")
 export class SubscriptionResolver {
@@ -22,6 +27,13 @@ export class SubscriptionResolver {
     @Args('userId') userId: string,
   ): Promise<SubscriptionEntity[]> {
     return this.subscriptionService.getUserSubscriptions(userId);
+  }
+
+  @HasRoles(Role.Admin,Role.Super)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Query(() => Int)
+  async subsCount() {
+    return this.subscriptionService.count();
   }
 
 //   @Mutation(() => Subscription,{name : 'createSubscription'})

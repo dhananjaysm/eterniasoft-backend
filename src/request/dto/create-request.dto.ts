@@ -32,5 +32,5 @@ export class CreateRequestDto {
 
   @Field()
   @IsUUID()
-  packageId: string;
+  planId: string;
 }

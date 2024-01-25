@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 import { Approval } from "src/approval/entities/approval.entity";
-import { Package } from "src/package/entities/package.entity";
+import { Plan } from "src/plan/entities/plan.entity";
+import { Product } from "src/product/entities/product.entity";
 import {  SubscriptionEntity } from "src/subscription/entities/subscription.entity";
 import { User } from "src/user/entities/user.entity";
 import {
@@ -43,9 +44,9 @@ export class Request {
   @ManyToOne(() => User, (user) => user.requests, { eager: true })
   user: User;
 
-  @Field(() => Package)
-  @ManyToOne(() => Package, (pkg) => pkg.requests, { eager: true })
-  package: Package;
+  @Field(() => Plan)
+  @ManyToOne(() => Plan, (plan) => plan.requests, { eager: true })
+  plan: Plan;
 
   @Field(() => SubscriptionEntity)
   @ManyToOne(() => SubscriptionEntity, (sub) => sub.requests, { eager: true })

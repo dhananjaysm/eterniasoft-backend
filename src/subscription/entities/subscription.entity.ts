@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql";
-import { Package } from "src/package/entities/package.entity";
+import { Product } from "src/product/entities/product.entity";
 import { Request } from "src/request/entities/request.entity";
 import { User } from "src/user/entities/user.entity";
 import {
@@ -10,6 +10,8 @@ import {
   Column,
   OneToMany,
 } from "typeorm";
+import { SubscriptionProduct } from "./subscription-product.entity";
+import { Plan } from "src/plan/entities/plan.entity";
 export enum SubscriptionType {
   Monthly = "Monthly",
   Annual = "Annual",
@@ -22,9 +24,8 @@ export enum SubscriptionStatus {
 }
 
 registerEnumType(SubscriptionStatus, {
-  name: 'SubscriptionStatus',
+  name: "SubscriptionStatus",
 });
-
 
 @ObjectType()
 @Entity({ name: "Subscription" })
@@ -50,10 +51,17 @@ export class SubscriptionEntity {
   @JoinColumn()
   user: User; // Represents the user who has subscribed
 
-  @Field(() => Package) 
-  @ManyToOne(() => Package, {eager:true})
-  @JoinColumn()
-  package: Package; // Represents the subscribed package
+
+  @ManyToOne(() => Plan)
+  plan: Plan;
+  
+  @OneToMany(
+    () => SubscriptionProduct,
+    (subscriptionProduct) => subscriptionProduct.subscription
+  )
+  additionalProducts: SubscriptionProduct[];
+
+
 
   @Field(() => Date)
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
@@ -63,7 +71,7 @@ export class SubscriptionEntity {
   @Column({ type: "timestamp", nullable: true })
   endDate: Date; // Optional end date for subscriptions
 
-  @Field(() => Int,{nullable:true})
+  @Field(() => Int, { nullable: true })
   @Column({ type: "int", nullable: true }) // The renewal period in days
   renewalPeriod: number;
 

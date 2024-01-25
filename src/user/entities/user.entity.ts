@@ -14,8 +14,8 @@ import * as bcrypt from "bcrypt";
 import { IsEmail, IsNotEmpty } from "class-validator";
 import { Request } from "src/request/entities/request.entity";
 import { Approval } from "src/approval/entities/approval.entity";
-import { Package } from "src/package/entities/package.entity";
-
+import { SubscriptionEntity } from "src/subscription/entities/subscription.entity";
+import { UsageRecord } from "src/feature/entities/usage-record.entity";
 
 @ObjectType()
 @Entity({ name: "User" })
@@ -28,17 +28,17 @@ export class User {
   @Column({ type: "varchar", unique: true })
   username: string;
 
-    @Column({ type : 'varchar' , nullable : false})
-    password : string ;
+  @Column({ type: "varchar", nullable: false })
+  password: string;
 
-    // hash password before insert
-    @BeforeInsert()
-    @BeforeUpdate()
-    async hashPassword(){
-        if(this.password){
-            this.password = await bcrypt.hash(this.password , 10)
-        }
+  // hash password before insert
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, 10);
     }
+  }
 
   @Field()
   @IsEmail()
@@ -51,25 +51,35 @@ export class User {
   @Column({ type: "varchar" })
   firstName: string;
 
-    @Field()
-    @Column({ type : 'varchar'})
-    lastName : string ;
+  @Field()
+  @Column({ type: "varchar" })
+  lastName: string;
 
-    @Field({nullable:true})
-    @Column({nullable:true})
-    department: string;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  department: string;
 
-    @Field((type)=>[String])
-    @Column({ type : 'enum', array : true , enum : Role , nullable : false ,default : []})
-    roles : Role[] ;
+  @Field((type) => [String])
+  @Column({
+    type: "enum",
+    array: true,
+    enum: Role,
+    nullable: false,
+    default: [],
+  })
+  roles: Role[];
 
-    @OneToOne(() => Package, { cascade: true, eager: true }) // Define a one-to-one relationship
-    @JoinColumn() // Specify the column that holds the foreign key
-    package: Package;
+  @Field((type) => [SubscriptionEntity])
+  @OneToOne(() => SubscriptionEntity, { cascade: true, eager: true }) // Define a one-to-one relationship
+  @JoinColumn() // Specify the column that holds the foreign key
+  subscriptions: SubscriptionEntity[];
 
-    @OneToMany(() => Request, request => request.user)
-    requests: Request[];
-  
-    @OneToMany(() => Approval, approval => approval.approver)
-    approvals: Approval[];
+  @OneToMany(() => Request, (request) => request.user)
+  requests: Request[];
+
+  @OneToMany(() => UsageRecord, (usage) => usage.user)
+  usageRecords: UsageRecord[];
+
+  @OneToMany(() => Approval, (approval) => approval.approver)
+  approvals: Approval[];
 }

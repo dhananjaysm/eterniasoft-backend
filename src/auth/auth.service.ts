@@ -45,9 +45,9 @@ export class AuthService {
     const payload: JwtPayload = {
       roles: newUser.roles,
       userId: newUser.id,
-      username: newUser.username,
+      email: newUser.email,
     };
-
+    
     return {
       access_token: await this._signToken(payload),
       role: newUser.roles,
@@ -60,10 +60,14 @@ export class AuthService {
     const payload: JwtPayload = {
       roles: user.roles,
       userId: user.id,
-      username: user.username,
+      email: user.email,
     };
 
-    return { access_token: await this._signToken(payload), role: user.roles };
+    return {
+      access_token: await this._signToken(payload),
+      role: user.roles,
+      userId: user.id,
+    };
   }
 
   async validateUser({ userId }: JwtPayload) {
