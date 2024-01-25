@@ -8,19 +8,19 @@ import { AuthenticatedPayload } from "./entities/AuthenticatedPayload.entity";
 @Resolver(()=> AuthenticatedPayload)
 export class AuthResolver {
     constructor(
-        private readonly authServise: AuthService , 
+        private readonly authService: AuthService , 
     ){}
 
     @Mutation(()=>AuthenticatedPayload)
     async register(@Args('registerInput') registerInput:RegisterInput){
-        const result = await this.authServise.register(registerInput);
+        const result = await this.authService.register(registerInput);
 
         return result ; 
     }
 
     @Mutation(()=> AuthenticatedPayload)
     async login(@Args('loginInput') loginInput:LoginInput){
-        const result = await this.authServise.login(loginInput);
+        const result = await this.authService.login(loginInput);
 
         return result ; 
     }

@@ -12,9 +12,10 @@ import {
 import { Role } from "../enums/role.enum";
 import * as bcrypt from "bcrypt";
 import { IsEmail, IsNotEmpty, IsInt, Min } from "class-validator";
-import { Package } from "src/package/entities/package.entity";
 import { Request } from "src/request/entities/request.entity";
 import { Approval } from "src/approval/entities/approval.entity";
+import { SubscriptionEntity } from "src/subscription/entities/subscription.entity";
+import { UsageRecord } from "src/feature/entities/usage-record.entity";
 
 @ObjectType()
 @Entity({ name: "User" })
@@ -27,7 +28,7 @@ export class User {
   @Column({ type: "varchar", unique: true })
   username: string;
 
-  @Column({ type: "varchar", nullable: false, select: false })
+  @Column({ type: "varchar", nullable: false })
   password: string;
 
   // hash password before insert
@@ -36,7 +37,6 @@ export class User {
   async hashPassword() {
     if (this.password) {
       this.password = await bcrypt.hash(this.password, 10);
-      this.passwordChangedAt = new Date();
     }
   }
 
@@ -54,6 +54,10 @@ export class User {
   @Field()
   @Column({ type: "varchar" })
   lastName: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  department: string;
 
   @Field((type) => [String])
   @Column({
@@ -79,12 +83,16 @@ export class User {
   @Column({ type: "int", nullable: true })
   otp: number;
 
-  @OneToOne(() => Package, { cascade: true, eager: true }) // Define a one-to-one relationship
+  @Field((type) => [SubscriptionEntity])
+  @OneToOne(() => SubscriptionEntity, { cascade: true, eager: true }) // Define a one-to-one relationship
   @JoinColumn() // Specify the column that holds the foreign key
-  package: Package;
+  subscriptions: SubscriptionEntity[];
 
   @OneToMany(() => Request, (request) => request.user)
   requests: Request[];
+
+  @OneToMany(() => UsageRecord, (usage) => usage.user)
+  usageRecords: UsageRecord[];
 
   @OneToMany(() => Approval, (approval) => approval.approver)
   approvals: Approval[];

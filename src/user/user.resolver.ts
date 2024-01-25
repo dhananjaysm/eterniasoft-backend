@@ -18,6 +18,9 @@ import { UpdateUserInput } from "./dto/update-user.input";
 import { User } from "./entities/user.entity";
 import { Role } from "./enums/role.enum";
 import { UserService } from "./user.service";
+import { PermissionsGuard } from "src/auth/guards/permission.guard";
+import { HasPermissions } from "src/auth/decorator/permission.decorator";
+import { LoginInput } from "./dto/login.input";
 
 @Resolver(() => User)
 export class UserReslover {
@@ -33,12 +36,17 @@ export class UserReslover {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => User, { name: "findUserById" })
-  async findUserById(@Args("id", { type: () => String }) id: string) {
-    return await this.userService.findOne({ id });
+  @Query(() => User)
+  async findUserById(@Args("userId", { type: () => String }) userId: string) {
+    return await this.userService.findOne({ id:userId });
   }
 
+<<<<<<< HEAD
   // @HasRoles(Role.Admin)
+=======
+
+  @HasRoles(Role.Admin)
+>>>>>>> aa19283161e753a6b3d268c952e190c9a303435f
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Mutation(() => User)
   async createUser(@Args("createUserInput") createUserInput: CreateUserInput) {
@@ -62,7 +70,13 @@ export class UserReslover {
     return this.userService.remove(id);
   }
 
+<<<<<<< HEAD
   @HasRoles(Role.Admin, Role.Super)
+=======
+  // @HasPermissions("view_all_users")
+  // @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @HasRoles(Role.Admin,Role.Super)
+>>>>>>> aa19283161e753a6b3d268c952e190c9a303435f
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Query(() => Int)
   async usersCount() {

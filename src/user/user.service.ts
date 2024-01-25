@@ -31,9 +31,9 @@ export class UserService {
   }
 
   async findByLogin(loginInput: LoginInput): Promise<User> {
-    const { username, password } = loginInput;
+    const { email, password } = loginInput;
 
-    const user = await this.findOne({ username });
+    const user = await this.findOne({ email });
 
     if (!user) {
       throw new BadRequestException("username is invalid");

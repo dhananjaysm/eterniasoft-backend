@@ -26,6 +26,7 @@ export class RequestResolver {
     return this.requestService.getRequestById(requestId);
   }
 
+  // @HasRoles(Role.User)
   @Mutation(returns => Request)
   async createRequest(
     @Args('createRequestInput') createRequestInput: CreateRequestDto,
