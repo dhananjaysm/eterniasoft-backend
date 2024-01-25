@@ -9,12 +9,14 @@ import { LoginInput } from "./dto/login.input";
 import { RegisterInput } from "./dto/register.input";
 import { JwtPayload } from "./jwt/jwt.payload";
 import { compare } from "bcrypt";
+import { EmailService } from "src/email/email.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    private readonly emailService: EmailService
   ) {}
 
   private async _signToken(payload: JwtPayload): Promise<string> {

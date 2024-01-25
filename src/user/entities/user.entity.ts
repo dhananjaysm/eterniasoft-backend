@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
+import { Field, ID, ObjectType, Int } from "@nestjs/graphql";
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -11,7 +11,7 @@ import {
 } from "typeorm";
 import { Role } from "../enums/role.enum";
 import * as bcrypt from "bcrypt";
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, IsInt, Min } from "class-validator";
 import { Package } from "src/package/entities/package.entity";
 import { Request } from "src/request/entities/request.entity";
 import { Approval } from "src/approval/entities/approval.entity";
@@ -72,6 +72,12 @@ export class User {
   @Field()
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   passwordChangedAt: Date;
+
+  @Field((type) => Int)
+  @IsInt()
+  @Min(100000)
+  @Column({ type: "int", nullable: true })
+  otp: number;
 
   @OneToOne(() => Package, { cascade: true, eager: true }) // Define a one-to-one relationship
   @JoinColumn() // Specify the column that holds the foreign key

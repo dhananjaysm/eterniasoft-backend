@@ -43,8 +43,9 @@ type User {
   email: String!
   firstName: String!
   lastName: String!
-  department: String
   roles: [String!]!
+  isVerified: Boolean!
+  passwordChangedAt: DateTime!
 }
 
 type StatusResult {

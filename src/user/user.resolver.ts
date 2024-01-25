@@ -1,5 +1,13 @@
 import { Req, UseGuards } from "@nestjs/common";
-import { Resolver, Query, Args, Mutation, Context, ID, Int } from "@nestjs/graphql";
+import {
+  Resolver,
+  Query,
+  Args,
+  Mutation,
+  Context,
+  ID,
+  Int,
+} from "@nestjs/graphql";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { RoleGuard } from "src/auth/guards/role.guard";
 import { GqlUser } from "src/common/decorators/gql-user.decorator";
@@ -15,7 +23,7 @@ import { UserService } from "./user.service";
 export class UserReslover {
   constructor(private readonly userService: UserService) {}
 
-  @HasRoles(Role.Admin,Role.Super)
+  @HasRoles(Role.Admin, Role.Super)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Query(() => [User], { name: "findAllUser" })
   async findAllUsers() {
@@ -30,7 +38,7 @@ export class UserReslover {
     return await this.userService.findOne({ id });
   }
 
-  @HasRoles(Role.Admin)
+  // @HasRoles(Role.Admin)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Mutation(() => User)
   async createUser(@Args("createUserInput") createUserInput: CreateUserInput) {
@@ -54,7 +62,7 @@ export class UserReslover {
     return this.userService.remove(id);
   }
 
-  @HasRoles(Role.Admin,Role.Super)
+  @HasRoles(Role.Admin, Role.Super)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Query(() => Int)
   async usersCount() {

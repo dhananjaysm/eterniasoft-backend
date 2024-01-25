@@ -12,7 +12,7 @@ import { FeatureModule } from "./feature/feature.module";
 import { RequestModule } from "./request/request.module";
 import { ApprovalModule } from "./approval/approval.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
-
+import { EmailModule } from "./email/email.module";
 @Module({
   imports: [
     DatabaseModule,
@@ -30,6 +30,7 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
     FeatureModule,
     RequestModule,
     ApprovalModule,
+    EmailModule,
     EventEmitterModule.forRoot(),
   ],
   providers: [],
