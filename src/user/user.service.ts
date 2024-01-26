@@ -12,6 +12,7 @@ import { CreateUserInput } from "./dto/create-user.input";
 import { UpdateUserInput } from "./dto/update-user.input";
 import { User } from "./entities/user.entity";
 import { Role } from "./enums/role.enum";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 type Where = FindOptionsWhere<User>;
 
@@ -20,6 +21,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    private eventEmitter: EventEmitter2
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -67,7 +69,11 @@ export class UserService {
     user.roles = roles;
 
     // Save user to the database
-    return this.userRepo.save(user);
+    const newUser = await this.userRepo.save(user);
+    this.eventEmitter.emit("user.created", {email:email,roles:roles});
+    console.log(`Event emitted for user creation:`);
+
+    return newUser;
   }
 
   private async checkIfExists(
@@ -76,7 +82,7 @@ export class UserService {
     errorMessage: string
   ): Promise<void> {
     const condition = { [field]: value };
-    const userInDb = await this.userRepo.findOne({where:condition});
+    const userInDb = await this.userRepo.findOne({ where: condition });
 
     if (userInDb) {
       throw new BadRequestException(errorMessage);
@@ -127,7 +133,6 @@ export class UserService {
     return this.userRepo.count();
   }
 
-  
   // async sendPackageRequest(userId: string, packageId: string): Promise<void> {
   //   // Check if the user and package exist
   //   const user = await this.userRepo.findOne({where:{id:userId}});
@@ -140,6 +145,4 @@ export class UserService {
   //   // Create a request
   //   await this.requestService.createRequest(user, pkg);
   // }
-
-  
 }

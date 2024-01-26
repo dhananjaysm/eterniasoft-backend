@@ -44,11 +44,11 @@ export class Request {
   @ManyToOne(() => User, (user) => user.requests, { eager: true })
   user: User;
 
-  @Field(() => Plan)
+  @Field(() => Plan , {nullable:true})
   @ManyToOne(() => Plan, (plan) => plan.requests, { eager: true })
   plan: Plan;
 
-  @Field(() => SubscriptionEntity)
+  @Field(() => SubscriptionEntity, {nullable:true})
   @ManyToOne(() => SubscriptionEntity, (sub) => sub.requests, { eager: true })
   subscription: SubscriptionEntity;
 

@@ -51,17 +51,16 @@ export class SubscriptionEntity {
   @JoinColumn()
   user: User; // Represents the user who has subscribed
 
-
-  @ManyToOne(() => Plan)
+  @Field(() => Plan)
+  @ManyToOne(() => Plan, {eager:true})
+  @JoinColumn()
   plan: Plan;
-  
+
   @OneToMany(
     () => SubscriptionProduct,
     (subscriptionProduct) => subscriptionProduct.subscription
   )
   additionalProducts: SubscriptionProduct[];
-
-
 
   @Field(() => Date)
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })

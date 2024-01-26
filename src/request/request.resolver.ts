@@ -34,6 +34,10 @@ export class RequestResolver {
     return this.requestService.createRequest(createRequestInput);
   }
 
+  @Query(returns => [Request])
+  async getRequestsByUser(@Args('userId') userId: string): Promise<Request[]> {
+    return this.requestService.getRequestsByUser(userId);
+  }
   @Query(() => Int)
   async requestsCount() {
     return this.requestService.count();

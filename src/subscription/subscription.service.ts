@@ -11,6 +11,8 @@ import { UserService } from "src/user/user.service";
 import { RenewSubscriptionDto } from "./dto/renew-sub.dto";
 import { ProductService } from "src/product/product.service";
 import { PlanService } from "src/plan/plan.service";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import { Role } from "src/user/enums/role.enum";
 type Where = FindOptionsWhere<SubscriptionEntity>;
 
 @Injectable()
@@ -19,11 +21,13 @@ export class SubscriptionService {
     @InjectRepository(SubscriptionEntity)
     private readonly subscriptionRepository: Repository<SubscriptionEntity>,
     private readonly planService: PlanService, // Import your package service
-    private readonly userService: UserService // Import your user service
+    private readonly userService: UserService, // Import your user service
+    private eventEmitter: EventEmitter2
   ) {}
 
   async createPlanSubscription(
-    createSubscriptionDto: CreateSubscriptionDto
+    createSubscriptionDto: CreateSubscriptionDto,
+    requestId?: string
   ): Promise<SubscriptionEntity> {
     const { userId, planId, subscriptionType } = createSubscriptionDto;
 
@@ -70,8 +74,28 @@ export class SubscriptionService {
       endDate.setFullYear(endDate.getFullYear() + 1);
       subscription.endDate = endDate;
     }
+    const savedSubscription = await this.subscriptionRepository.save(
+      subscription
+    );
+    this.eventEmitter.emit("subscription.created", {
+      subscriptionId: savedSubscription.id,
+      requestId,
+    });
 
-    return this.subscriptionRepository.save(subscription);
+    return subscription;
+  }
+
+  @OnEvent("user.created", { async: true })
+  async handleUserCreatedEvent(event: { email: string; roles: Role[] }) {
+    // CHECK FOR INTERNAL USER IF IT EXISTS IN ANY PRODUCTS
+    const { email, roles } = event;
+    if (roles.includes(Role.Internal)) {
+      
+      //Example ZOHO API CALL
+
+//  https://accounts.zoho.in/oauth/v2/token?refresh_token=1000.15ca3fdaff8257954a03c4c86617276d.bc33befd4f36b8276da7b681704fecf7&client_id=1000.O38353TCVAAIFZ0OSXVR65SR28MS6N&client_secret=6834f0dc2249a9ad48f92fe08887c3b4779a2f5495&grant_type=refresh_token
+
+    }
   }
 
   async findAll(): Promise<SubscriptionEntity[]> {
