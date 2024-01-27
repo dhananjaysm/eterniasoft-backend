@@ -86,13 +86,12 @@ type User {
   email: String!
   firstName: String!
   lastName: String!
+  department: String
   roles: [String!]!
-<<<<<<< HEAD
   isVerified: Boolean!
   passwordChangedAt: DateTime!
-=======
+  otp: Int!
   subscriptions: [SubscriptionEntity!]!
->>>>>>> aa19283161e753a6b3d268c952e190c9a303435f
 }
 
 type StatusResult {
