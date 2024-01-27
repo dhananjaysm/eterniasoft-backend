@@ -47,7 +47,7 @@ export class Plan {
   @Column({ type: "enum", enum: PlanStatus, default: PlanStatus.ACTIVE })
   status: string; // Status of the plan, e.g., active, discontinued
 
-  @Field()
+  @Field(()=>String,{ nullable: true })
   @Column({ nullable: true })
   billingCycle: string; // e.g., 'monthly', 'yearly'
 
@@ -72,9 +72,9 @@ export class Plan {
   @OneToMany(() => Request, (request) => request.plan)
   requests: Request[];
 
-  
+
   @Field(() => [Product], { nullable: true })
-  @OneToMany(() => Product, (product) => product.plan)
+  @OneToMany(() => Product, (product) => product.plan,{eager:true})
   products: Product[];
 
   @Field()

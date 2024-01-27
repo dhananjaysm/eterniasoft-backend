@@ -28,7 +28,7 @@ export class UserReslover {
 
   @HasRoles(Role.Admin, Role.Super)
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Query(() => [User], { name: "findAllUser" })
+  @Query(() => [User])
   async findAllUsers() {
     const users = await this.userService.findAll();
 

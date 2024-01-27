@@ -21,6 +21,7 @@ type SubscriptionEntity {
   subscriptionType: SubscriptionType!
   status: SubscriptionStatus!
   user: User!
+  plan: Plan!
   startDate: DateTime!
   endDate: DateTime!
   renewalPeriod: Int
@@ -60,7 +61,7 @@ type Plan {
   price: Float!
   duration: Int!
   status: String!
-  billingCycle: String!
+  billingCycle: String
   autoRenew: Boolean!
   trialPeriodDays: Float!
   products: [Product!]
@@ -72,8 +73,8 @@ type Request {
   id: ID!
   requestType: String!
   user: User!
-  plan: Plan!
-  subscription: SubscriptionEntity!
+  plan: Plan
+  subscription: SubscriptionEntity
   approvals: [Approval!]
   status: String!
   createdAt: DateTime!
@@ -92,6 +93,8 @@ type User {
   passwordChangedAt: DateTime!
   otp: Int!
   subscriptions: [SubscriptionEntity!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type StatusResult {
@@ -106,13 +109,14 @@ type AuthenticatedPayload {
 }
 
 type Query {
-  findAllUser: [User!]!
+  findAllUsers: [User!]!
   findUserById(userId: String!): User!
   usersCount: Int!
   findProducts: [Product!]!
   findProduct(productId: String!): Product!
   getAllRequests: [Request!]!
   getRequestById(requestId: ID!): Request!
+  getRequestsByUser(userId: String!): [Request!]!
   requestsCount: Int!
   findPlans: [Plan!]!
   findPlan(planId: String!): Plan!

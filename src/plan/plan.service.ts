@@ -21,7 +21,11 @@ export class PlanService {
   }
 
   async findOne(id: string): Promise<Plan> {
-    return this.planRepo.findOne({where:{id:id}});
+    const plan = await  this.planRepo.findOne({where:{id:id}});
+    if (!plan) {
+      throw new Error(`Plan with ID ${id} not found`);
+    }
+    return plan;
   }
 
   async create(planData: CreatePlanInput): Promise<Plan> {

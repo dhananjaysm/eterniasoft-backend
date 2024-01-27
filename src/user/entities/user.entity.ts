@@ -3,11 +3,13 @@ import {
   BeforeInsert,
   BeforeUpdate,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Role } from "../enums/role.enum";
 import * as bcrypt from "bcrypt";
@@ -96,4 +98,12 @@ export class User {
 
   @OneToMany(() => Approval, (approval) => approval.approver)
   approvals: Approval[];
+
+  @Field()
+  @CreateDateColumn({ type: "timestamp" })
+  createdAt: Date;
+
+  @Field()
+  @UpdateDateColumn({ type: "timestamp" })
+  updatedAt: Date;
 }

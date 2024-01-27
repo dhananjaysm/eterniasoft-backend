@@ -112,20 +112,18 @@ export class RequestService implements OnModuleInit {
     request.status = Status.APPROVED;
     await this.requestRepository.save(request);
 
-    // Retrieve the associated user and product using the relationships
-    const user = request.user; // Assuming you have a "user" relationship in your Request entity
-    const plan = request.plan; // Assuming you have a "product" relationship in your Request entity
+    const user = request.user;
+    const plan = request.plan;
 
     if (!user || !plan) {
       throw new Error("User or Package not found in the approved request");
     }
 
     // Create a subscription for the user and product
-    const userId = user.id; // Assuming your User entity has an "id" attribute
-    const planId = plan.id; // Assuming your Package entity has an "id" attribute
+    const userId = user.id;
+    const planId = plan.id;
 
-    const subscriptionType = SubscriptionType.Monthly; // Set the subscription type based on your logic
-    // You can adjust the subscription type based on your requirements
+    const subscriptionType = SubscriptionType.Monthly;
 
     const createSubscriptionDto = {
       userId,
@@ -136,7 +134,33 @@ export class RequestService implements OnModuleInit {
     console.log(`Subscription Created`);
 
     // Call the subscription service to create the subscription
-    await this.subscriptionService.createPlanSubscription(createSubscriptionDto);
+    await this.subscriptionService.createPlanSubscription(
+      createSubscriptionDto,
+      requestId
+    );
+  }
+
+  @OnEvent("subscription.created", { async: true })
+  async handleSubscriptionCreatedEvent(event: {
+    subscriptionId: string;
+    requestId: string;
+  }) {
+    const { subscriptionId, requestId } = event;
+
+    const request = await this.requestRepository.findOne({
+      where: { id: requestId },
+    });
+    if (!request) {
+      throw new Error("Request not found");
+    }
+    const subscription = await this.subscriptionService.findOne({
+      id: subscriptionId,
+    });
+    if (!subscription) {
+      throw new Error("Subscription not found");
+    }
+    request.subscription = subscription;
+    await this.requestRepository.save(request);
   }
 
   async getAllRequests(): Promise<Request[]> {
@@ -145,6 +169,13 @@ export class RequestService implements OnModuleInit {
 
   async getRequestById(requestId: string): Promise<Request | undefined> {
     return this.requestRepository.findOne({ where: { id: requestId } });
+  }
+
+  async getRequestsByUser(userId: string): Promise<Request[]> {
+    return this.requestRepository.find({
+      where: { user: { id: userId } },
+      relations: ["user", "plan", "subscription", "approvals"], // Add any other relations you need
+    });
   }
 
   async count(): Promise<number> {
