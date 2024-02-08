@@ -12,6 +12,7 @@ import { ApprovalModule } from "./approval/approval.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { SubscriptionModule } from "./subscription/subscription.module";
 import { ProductModule } from "./product/product.module";
+import { NotificationModule } from "./notification/notification.module";
 
 @Module({
   imports: [
@@ -22,6 +23,9 @@ import { ProductModule } from "./product/product.module";
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      subscriptions: {
+        "graphql-ws": true,
+      },
     }),
     UserModule,
     AuthModule,
@@ -31,6 +35,7 @@ import { ProductModule } from "./product/product.module";
     ApprovalModule,
     SubscriptionModule,
     EventEmitterModule.forRoot(),
+    NotificationModule,
   ],
   providers: [],
 })

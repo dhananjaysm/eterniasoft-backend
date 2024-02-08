@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { FindOptionsWhere, Repository } from "typeorm";
+import { Between, FindOptionsWhere, Repository } from "typeorm";
 import {
   SubscriptionEntity,
   SubscriptionStatus,
@@ -209,4 +209,17 @@ export class SubscriptionService {
   async count(): Promise<number> {
     return this.subscriptionRepository.count();
   }
+
+  async getSubscriptionsByDateRange(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<SubscriptionEntity[]> {
+    return this.subscriptionRepository.find({
+      where: {
+        startDate: Between(startDate, endDate),
+      },
+    });
+  }
+
+  
 }
