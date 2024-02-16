@@ -35,7 +35,7 @@ export class UserReslover {
     return users;
   }
 
-  @UseGuards(JwtAuthGuard)
+  
   @Query(() => User)
   async findUserById(@Args("userId", { type: () => String }) userId: string) {
     return await this.userService.findOne({ id: userId });

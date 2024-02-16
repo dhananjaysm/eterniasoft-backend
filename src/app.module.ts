@@ -14,6 +14,7 @@ import { SubscriptionModule } from "./subscription/subscription.module";
 import { ProductModule } from "./product/product.module";
 import { EmailModule } from "./email/email.module";
 import { VectorSearchModule } from "./vectorSearch/vector-search.module";
+import { NotificationModule } from "./notification/notification.module";
 @Module({
   imports: [
     DatabaseModule,
@@ -23,6 +24,9 @@ import { VectorSearchModule } from "./vectorSearch/vector-search.module";
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      subscriptions: {
+        "graphql-ws": true,
+      },
     }),
     UserModule,
     AuthModule,
@@ -34,6 +38,7 @@ import { VectorSearchModule } from "./vectorSearch/vector-search.module";
     EmailModule,
     VectorSearchModule,
     EventEmitterModule.forRoot(),
+    NotificationModule,
   ],
   providers: [],
 })

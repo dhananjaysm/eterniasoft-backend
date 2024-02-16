@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -18,6 +19,7 @@ import { Request } from "src/request/entities/request.entity";
 import { Approval } from "src/approval/entities/approval.entity";
 import { SubscriptionEntity } from "src/subscription/entities/subscription.entity";
 import { UsageRecord } from "src/feature/entities/usage-record.entity";
+import { Notification } from "src/notification/entities/notification.entity";
 
 @ObjectType()
 @Entity({ name: "User" })
@@ -71,22 +73,8 @@ export class User {
   })
   roles: Role[];
 
-  @Field()
-  @Column({ type: "boolean", default: false })
-  isVerified: boolean;
-
-  @Field()
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
-  passwordChangedAt: Date;
-
-  @Field((type) => Int)
-  @IsInt()
-  @Min(100000)
-  @Column({ type: "int", nullable: true })
-  otp: number;
-
-  @Field((type) => [SubscriptionEntity])
-  @OneToMany(() => SubscriptionEntity, (subscription) => subscription.user) // Define a one-to-one relationship
+  @Field((type) => [SubscriptionEntity],{nullable:true})
+  @OneToMany(() => SubscriptionEntity,(sub)=>sub.user,{eager:true}) // Define a one-to-one relationship
   @JoinColumn() // Specify the column that holds the foreign key
   subscriptions: SubscriptionEntity[];
 
@@ -99,6 +87,9 @@ export class User {
 
   @OneToMany(() => Approval, (approval) => approval.approver)
   approvals: Approval[];
+
+  @ManyToMany(() => Notification, (notification) => notification.users)
+  notifications: Notification[];
 
   @Field()
   @CreateDateColumn({ type: "timestamp" })

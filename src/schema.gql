@@ -82,6 +82,28 @@ type Request {
   updatedAt: DateTime!
 }
 
+type Notification {
+  id: Float!
+  message: String!
+  status: NotificationStatus!
+  priority: NotificationPriority!
+  payload: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum NotificationStatus {
+  Sent
+  Delivered
+  Read
+}
+
+enum NotificationPriority {
+  Low
+  Medium
+  High
+}
+
 type User {
   id: ID!
   username: String!
@@ -90,9 +112,6 @@ type User {
   lastName: String!
   department: String
   roles: [String!]!
-  isVerified: Boolean!
-  passwordChangedAt: DateTime!
-  otp: Int!
   subscriptions: [SubscriptionEntity!]!
   requests: [Request!]!
   createdAt: DateTime!
@@ -128,8 +147,10 @@ type Query {
   findSubscriptionById(id: String!): SubscriptionEntity!
   userSubscriptions(userId: String!): [SubscriptionEntity!]!
   subsCount: Int!
+  getSubscriptionsByDateRange(startDate: DateTime!, endDate: DateTime!): [SubscriptionEntity!]!
   approvals: [Approval!]!
   approval(id: String!): Approval!
+  notifications: [Notification!]!
 }
 
 type Mutation {
@@ -145,6 +166,7 @@ type Mutation {
   createPlan(planData: CreatePlanInput!): Plan!
   updatePlan(id: String!, planData: UpdatePlanInput!): Plan!
   approveRequest(approvalId: String!, approverId: String!, comments: String!): Approval!
+  addNotification(message: String!): Notification!
 }
 
 input CreateUserInput {
@@ -233,4 +255,8 @@ input UpdatePlanInput {
   autoRenew: Boolean
   trialPeriodDays: Int
   productIds: [String!]
+}
+
+type Subscription {
+  notificationAdded: Notification!
 }

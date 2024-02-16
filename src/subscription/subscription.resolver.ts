@@ -36,6 +36,15 @@ export class SubscriptionResolver {
     return this.subscriptionService.count();
   }
 
+  @Query(() => [SubscriptionEntity], { name: 'getSubscriptionsByDateRange' })
+  async getSubscriptionsByDateRange(
+    @Args('startDate', { type: () => Date }) startDate: Date,
+    @Args('endDate', { type: () => Date }) endDate: Date,
+  ): Promise<SubscriptionEntity[]> {
+    return this.subscriptionService.getSubscriptionsByDateRange(startDate, endDate);
+  }
+
+
 //   @Mutation(() => Subscription,{name : 'createSubscription'})
 //   async createSubscription(@Args('SubscriptionData') SubscriptionData: CreateSubscriptionDTO): Promise<Subscription> {
 //     return this.subscriptionService.create(SubscriptionData);
