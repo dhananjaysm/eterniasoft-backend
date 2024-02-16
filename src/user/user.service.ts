@@ -29,7 +29,10 @@ export class UserService {
   }
 
   async findOne(where: Where): Promise<User> {
-    return await this.userRepo.findOne({ where });
+    return await this.userRepo.findOne({
+      where,
+      relations: ["subscriptions", "requests", "approvals"],
+    });
   }
 
   async findByLogin(loginInput: LoginInput): Promise<User> {
@@ -70,7 +73,7 @@ export class UserService {
 
     // Save user to the database
     const newUser = await this.userRepo.save(user);
-    this.eventEmitter.emit("user.created", {email:email,roles:roles});
+    this.eventEmitter.emit("user.created", { email: email, roles: roles });
     console.log(`Event emitted for user creation:`);
 
     return newUser;

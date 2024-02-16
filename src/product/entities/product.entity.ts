@@ -14,6 +14,8 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { ProductFeature } from "./product-feature.entity";
 @ObjectType()
@@ -40,14 +42,31 @@ export class Product {
   maxUsers: number;
 
   @Field(() => [ProductFeature], { nullable: true })
-  @OneToMany(() => ProductFeature, (product) => product.product, {eager:true, cascade: true })
+  @OneToMany(() => ProductFeature, (product) => product.product, {
+    eager: true,
+    cascade: true,
+  })
   productFeatures: ProductFeature[];
 
-//   @OneToMany(() => Request, (request) => request.product)
-//   requests: Request[];
-
-  @ManyToOne(() => Plan, (plan) => plan.products)
-  plan: Plan;
+  //   @OneToMany(() => Request, (request) => request.product)
+  //   requests: Request[];
+  // @Field(() => [Plan], { nullable: true })
+  // @ManyToMany(() => Plan, (plan) => plan.products)
+  // plan: Plan[];
+  @Field(() => [Plan], { nullable: true })
+  @ManyToMany(() => Plan, (plans) => plans.products)
+  @JoinTable({
+    name: "products_plans_id",
+    joinColumn: {
+      name: "products",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "plans",
+      referencedColumnName: "id",
+    },
+  })
+  plans: Plan[];
 
   @OneToMany(
     () => SubscriptionProduct,

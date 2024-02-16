@@ -13,6 +13,7 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 import { SubscriptionModule } from "./subscription/subscription.module";
 import { ProductModule } from "./product/product.module";
 import { EmailModule } from "./email/email.module";
+import { VectorSearchModule } from "./vectorSearch/vector-search.module";
 @Module({
   imports: [
     DatabaseModule,
@@ -31,6 +32,7 @@ import { EmailModule } from "./email/email.module";
     ApprovalModule,
     SubscriptionModule,
     EmailModule,
+    VectorSearchModule,
     EventEmitterModule.forRoot(),
   ],
   providers: [],

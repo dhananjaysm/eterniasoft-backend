@@ -24,17 +24,20 @@ export class PlanResolver {
     return this.planService.findOne(planId);
   }
 
-  @HasRoles(Role.Admin,Role.Super)
-  @UseGuards(JwtAuthGuard,RoleGuard)
+  // @Query(() => Plan)
+  // async deleteAllPlan(): Promise<void> {
+  //   this.planService.deleteAll();
+  // }
+
+  @HasRoles(Role.Admin, Role.Super)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Mutation(() => Plan)
-  async createPlan(
-    @Args("planData") planData: CreatePlanInput
-  ): Promise<Plan> {
+  async createPlan(@Args("planData") planData: CreatePlanInput): Promise<Plan> {
     return this.planService.create(planData);
   }
 
-  @HasRoles(Role.Admin,Role.Super)
-  @UseGuards(JwtAuthGuard,RoleGuard)
+  @HasRoles(Role.Admin, Role.Super)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Mutation(() => Plan)
   async updatePlan(
     @Args("id") id: string,

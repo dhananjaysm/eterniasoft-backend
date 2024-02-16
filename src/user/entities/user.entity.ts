@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType, Int } from "@nestjs/graphql";
+import { Field, ID, ObjectType, Int, Subscription } from "@nestjs/graphql";
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -86,10 +86,11 @@ export class User {
   otp: number;
 
   @Field((type) => [SubscriptionEntity])
-  @OneToOne(() => SubscriptionEntity, { cascade: true, eager: true }) // Define a one-to-one relationship
+  @OneToMany(() => SubscriptionEntity, (subscription) => subscription.user) // Define a one-to-one relationship
   @JoinColumn() // Specify the column that holds the foreign key
   subscriptions: SubscriptionEntity[];
 
+  @Field((type) => [Request])
   @OneToMany(() => Request, (request) => request.user)
   requests: Request[];
 

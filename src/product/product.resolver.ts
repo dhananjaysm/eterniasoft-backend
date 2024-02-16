@@ -4,6 +4,7 @@ import { Product } from "./entities/product.entity";
 import { ProductService } from "./product.service";
 import { CreateProductInput } from "./dto/create-product.dto";
 import { UpdateProductDTO } from "./dto/update-product.dto";
+// import { query } from "express";
 
 @Resolver(() => Product)
 export class ProductResolver {
@@ -19,6 +20,17 @@ export class ProductResolver {
     return this.productService.findOne({ id: productId });
   }
 
+  // @Query(() => Product)
+  // async deleteAllProduct(): Promise<void> {
+  //   this.productService.deleteAll();
+  // }
+
+  @Query(() => [Product])
+  async searchProducts(
+    @Args("query", { type: () => String }) query: string
+  ): Promise<Product[]> {
+    return this.productService.searchProducts(query);
+  }
   @Mutation(() => Product)
   async createProduct(
     @Args("productData") productData: CreateProductInput

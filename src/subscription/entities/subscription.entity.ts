@@ -47,12 +47,12 @@ export class SubscriptionEntity {
   status: SubscriptionStatus;
 
   @Field(() => User)
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { eager: true })
   @JoinColumn()
   user: User; // Represents the user who has subscribed
 
   @Field(() => Plan)
-  @ManyToOne(() => Plan, {eager:true})
+  @ManyToOne(() => Plan, { eager: true })
   @JoinColumn()
   plan: Plan;
 

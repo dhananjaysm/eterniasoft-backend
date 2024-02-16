@@ -42,7 +42,7 @@ export class UserReslover {
   }
 
   // @HasRoles(Role.Admin)
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  // @UseGuards(JwtAuthGuard, RoleGuard)
   @Mutation(() => User)
   async createUser(@Args("createUserInput") createUserInput: CreateUserInput) {
     return this.userService.create(createUserInput);

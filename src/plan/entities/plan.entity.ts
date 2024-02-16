@@ -13,6 +13,8 @@ import {
   OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from "typeorm";
 import { UsageLimit } from "src/feature/entities/usage-limit.entity";
 import { PlanFeature } from "./plan-feature.entity";
@@ -47,7 +49,7 @@ export class Plan {
   @Column({ type: "enum", enum: PlanStatus, default: PlanStatus.ACTIVE })
   status: string; // Status of the plan, e.g., active, discontinued
 
-  @Field(()=>String,{ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   billingCycle: string; // e.g., 'monthly', 'yearly'
 
@@ -60,7 +62,9 @@ export class Plan {
   trialPeriodDays: number;
 
   //RELATIONS
-  @OneToMany(() => PlanFeature, (planfeature) => planfeature.plan,{cascade:true})
+  @OneToMany(() => PlanFeature, (planfeature) => planfeature.plan, {
+    cascade: true,
+  })
   planFeatures: PlanFeature[];
 
   @OneToMany(() => UsageLimit, (usageLimit) => usageLimit.plan)
@@ -72,9 +76,22 @@ export class Plan {
   @OneToMany(() => Request, (request) => request.plan)
   requests: Request[];
 
-
+  // @Field(() => [Product], { nullable: true })
+  // @ManyToMany(() => Product, (product) => product.plan, { eager: true })
+  // products: Product[];
   @Field(() => [Product], { nullable: true })
-  @OneToMany(() => Product, (product) => product.plan,{eager:true})
+  @ManyToMany(() => Product, (product) => product.plans, { eager: true })
+  @JoinTable({
+    name: "products_plans_id",
+    joinColumn: {
+      name: "plans",
+      referencedColumnName: "id",
+    },
+    inverseJoinColumn: {
+      name: "products",
+      referencedColumnName: "id",
+    },
+  })
   products: Product[];
 
   @Field()

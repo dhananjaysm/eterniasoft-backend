@@ -53,6 +53,7 @@ export class AuthService {
     return {
       access_token: await this._signToken(payload),
       role: newUser.roles,
+      user: newUser,
     };
   }
 
@@ -68,6 +69,7 @@ export class AuthService {
       access_token: await this._signToken(payload),
       role: user.roles,
       userId: user.id,
+      user,
     };
   }
 

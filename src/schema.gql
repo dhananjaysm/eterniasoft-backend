@@ -50,6 +50,7 @@ type Product {
   description: String
   maxUsers: Float
   productFeatures: [ProductFeature!]
+  plans: [Plan!]
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -93,6 +94,7 @@ type User {
   passwordChangedAt: DateTime!
   otp: Int!
   subscriptions: [SubscriptionEntity!]!
+  requests: [Request!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -106,6 +108,7 @@ type StatusResult {
 type AuthenticatedPayload {
   access_token: String!
   userId: String!
+  user: User!
 }
 
 type Query {
@@ -114,6 +117,7 @@ type Query {
   usersCount: Int!
   findProducts: [Product!]!
   findProduct(productId: String!): Product!
+  searchProducts(query: String!): [Product!]!
   getAllRequests: [Request!]!
   getRequestById(requestId: ID!): Request!
   getRequestsByUser(userId: String!): [Request!]!
