@@ -47,7 +47,7 @@ export class SubscriptionEntity {
   status: SubscriptionStatus;
 
   @Field(() => User)
-  @ManyToOne(() => User, { eager: true })
+  @ManyToOne(() => User)
   @JoinColumn()
   user: User; // Represents the user who has subscribed
 

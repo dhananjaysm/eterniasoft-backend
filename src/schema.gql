@@ -112,7 +112,7 @@ type User {
   lastName: String!
   department: String
   roles: [String!]!
-  subscriptions: [SubscriptionEntity!]!
+  subscriptions: [SubscriptionEntity!]
   requests: [Request!]!
   createdAt: DateTime!
   updatedAt: DateTime!
