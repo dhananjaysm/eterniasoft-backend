@@ -2,6 +2,5 @@ node_modules
 dist 
 .env 
 glove.6B.100d.txt
-glove.6B.50d.txt
 glove.6B.300d.txt
 glove.6B.200d.txt
