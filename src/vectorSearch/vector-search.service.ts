@@ -30,7 +30,7 @@ export class VectorSearchService {
     const path = require("path");
 
     const gloveModel = new Map<string, tf.Tensor>();
-    const filePath = path.resolve(__dirname, "./../../glove.6B.100d.txt"); // Adjust the path as necessary
+    const filePath = path.resolve(__dirname, "./../../glove.6B.50d.txt"); // Adjust the path as necessary
 
     try {
       const data = fs.readFileSync(filePath, "utf-8");
